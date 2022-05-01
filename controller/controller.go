@@ -10,20 +10,11 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-// Controller example
-type Controller struct {
-}
-
-// NewController example
-func NewController() *Controller {
-	return &Controller{}
-}
-
 // parameters of mysql at localhost
 // which username and passwd are default setting
 const (
 	USERNAME = "root"
-	PASSWORD = "dc0906708652"
+	PASSWORD = "password"
 	NETWORK  = "tcp"
 	SERVER   = "127.0.0.1"
 	PORT     = 3306
@@ -38,21 +29,8 @@ type Ip struct {
 	Status float64 `json:"狀態"`
 }
 
-// GetDatas responds with the list of all iplogs as JSON.
-// GetDatas godoc
-// @Summary      List iplogs
-// @Description  get iplogs
-// @Tags         iplogs
-// @Accept       json
-// @Produce      json
-// @Param        sql    query     string  false  "name search by sql"  Format(email)
 
-// Success      200  {array}   model.Account
-// Failure      400  {object}  httputil.HTTPError
-// Failure      404  {object}  httputil.HTTPError
-// Failure      500  {object}  httputil.HTTPError
-
-// @Router       /iplogs [get]
+// Get all iplogs LIMIT 100
 func GetDatas(c *gin.Context) {
 	conn := fmt.Sprintf("%s:%s@%s(%s:%d)/%s", USERNAME, PASSWORD, NETWORK, SERVER, PORT, DATABASE)
 
@@ -91,20 +69,7 @@ func GetDatas(c *gin.Context) {
 	defer db.Close()
 }
 
-// GetDataBYIP godoc
-// @Summary      Show an IP
-// @Description  get string by IP
-// @Tags         iplogs
-// @Accept       json
-// @Produce      json
-// @Param        ip   path      string true  "Datas IP"
-
-// Success      200  {object}  model.Account
-// Failure      400  {object}  httputil.HTTPError
-// Failure      404  {object}  httputil.HTTPError
-// Failure      500  {object}  httputil.HTTPError
-
-// @Router       /iplogs/{id} [get]
+// find iplogs of a single ip
 func GetDataByIP(c *gin.Context) {
 	conn := fmt.Sprintf("%s:%s@%s(%s:%d)/%s", USERNAME, PASSWORD, NETWORK, SERVER, PORT, DATABASE)
 	db, err := sql.Open("mysql", conn)
@@ -120,8 +85,8 @@ func GetDataByIP(c *gin.Context) {
 
 	ip := c.Param("ip")
 	fmt.Printf("iP = %v", ip)
-	// Loop over the list of albums, looking for
-	// an album whose ID value matches the parameter.
+	// Loop over the list of iplogs, looking for
+	// a log whose Ip value matches the parameter.
 	var datas []Ip
 	sqlIp := "SELECT * FROM ip_log WHERE IP = '" + ip + "' ;"
 	rows, err := db.Query(sqlIp)
@@ -147,26 +112,5 @@ func GetDataByIP(c *gin.Context) {
 
 	defer rows.Close()
 	defer db.Close()
-	// for _, a := range datas {
-	// 	if a.IP == ip {
-	// 		c.IndentedJSON(http.StatusOK, a)
-	// 		return
-	// 	}
-	// }
-	// c.IndentedJSON(http.StatusNotFound, gin.H{"message": "data not found"})
 }
 
-// func AddData(data Ip) (int64, error) {
-// 	conn := fmt.Sprintf("%s:%s@%s(%s:%d)/%s", USERNAME, PASSWORD, NETWORK, SERVER, PORT, DATABASE)
-
-// 	db, err := sql.Open("mysql", conn)
-// 	result, err := db.Exec("INSERT INTO ip_log (IP, Time, Url, Status) VALUES (?, ?, ?)", &data.IP, &data.Time, &data.Url, &data.Status)
-// 	if err != nil {
-// 		return 0, fmt.Errorf("addData: %v", err)
-// 	}
-// 	id, err := result.LastInertId()
-// 	if err != nil {
-// 		return 0, fmt.Errorf("addData: %v", err)
-// 	}
-// 	return id, nil
-// }
