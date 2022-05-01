@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// sets up an association in which getAlbums handles requests to the /albums endpoint path.
+// sets up an association in which getDatas handles requests to the /iplogs endpoint path.
 func main() {
 	// Initialize a Gin router using Default.
 	router := gin.Default()
